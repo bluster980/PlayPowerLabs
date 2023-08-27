@@ -1,28 +1,27 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
-const dbController = require('./controllers/db.controller');
-const userController = require('./controllers/userController');
-const db = require('./database/database');
-const queries = require('./database/queries');
-
+const dotenv = require("dotenv");
 dotenv.config();
-const port = process.env.PORT;
+
+const PORT = process.env.PORT || 8000;
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const logger = require("./utils/pino");
+
+require("./database/database");
 
 const app = express();
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-        res.send('Hello World!');
-    }
-);
+app.use("/api", require("./routes/db.route.js"));
 
-app.get('/checkdb', dbController.checkDb); 
+app.get("/", (req, res) => {
+  logger.info(`${req.method}: ${req.originalUrl}`);
+  res.send("Hello World!");
+});
 
-app.get('/users', userController.getUsers);
-
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
-}
-);
+app.listen(PORT, (err) => {
+  if (err) logger.error(err);
+  else logger.info(`Server up and running at ${PORT}`);
+});

@@ -1,8 +1,9 @@
-const express = require('express');
-const { checkDb } = require('../controllers/db.controller.js');
+const express = require("express");
+const { checkDb } = require("../controllers/db.controller");
+const { getUsers } = require("../controllers/userController");
 const router = express.Router();
 
-router.use('/db', require('./db.route.js'));
-router.get('/check',checkDb);
+router.get("/check", checkDb);
+router.get("/users", getUsers);
 
 module.exports = router;
