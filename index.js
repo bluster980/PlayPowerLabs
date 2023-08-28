@@ -1,15 +1,22 @@
+const express = require('express');
+const cookieParser = require('cookie-parser')
+
+const app = express();
+
+app.use(cookieParser())
+
 const dotenv = require("dotenv");
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
 
-const express = require("express");
+// const express = require("express");
 const bodyParser = require("body-parser");
 const logger = require("./utils/pino");
 
 require("./database/database");
 
-const app = express();
+// const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
