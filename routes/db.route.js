@@ -6,6 +6,9 @@ const { logIn } = require("../controllers/authController.js");
 const { assignmentCreate} = require("../controllers/assignmentController.js");
 const { assignmentUpdate} = require("../controllers/assignmentController.js");
 const { assignmentDelete} = require("../controllers/assignmentController.js");
+const { teacherOnly } = require("../middlewares/checkRole.js");
+const { studentOnly } = require("../middlewares/checkRole.js");
+const { assignmentSubmission } = require("../controllers/assignmentController.js");
 // const express = require('express');
 const cookieParser = require('cookie-parser')
 
@@ -19,8 +22,9 @@ router.get("/check", checkDb);
 router.get("/users", getUsers);
 router.get("/signup", signUp);
 router.post("/login", logIn);
-router.post("/assignment-create", assignmentCreate);
-router.post("/assignment-update", assignmentUpdate);
-router.post("/assignment-delete", assignmentDelete);
+router.post("/assignment-create", teacherOnly, assignmentCreate);
+router.post("/assignment-update", teacherOnly, assignmentUpdate);
+router.post("/assignment-delete", teacherOnly, assignmentDelete);
+router.post("/assignment-submission", studentOnly, assignmentSubmission);
 
 module.exports = router;

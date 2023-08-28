@@ -3,15 +3,33 @@ const logger = require("../utils/pino");
 const queries = require("../database/queries");
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(cookieParser());
 
+
 const assignmentCreate = async (req, res) => {
   logger.info(`${req.method}: ${req.originalUrl}`);
-  const { published_by, title, description, due_date, points, assignedStudents } = req.body;
+  const { title, description, due_date, points, assignedStudents } = req.body;
   const dbInstance = await db.getInstance();
   console.log(req.body);
+
+  // Get the token from the request cookies
+  const token = req.cookies.jwt;
+  if (!token) {
+    return res.status(401).send({ message: 'Unauthorized: No token provided.' });
+  }
+
+  // Verify the token and get the user id
+  let published_by;
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: 'Unauthorized: Invalid token.' });
+    }
+    published_by = decoded.user_Id;
+  });
+
   try {
     // Create the assignment and retrieve its ID
     const createAssignmentResult = await dbInstance.query(
@@ -32,8 +50,6 @@ const assignmentCreate = async (req, res) => {
     dbInstance.release();
   }
 };
-
-
 
 const assignmentUpdate = async (req, res) => {
   logger.info(`${req.method}: ${req.originalUrl}`);
@@ -86,4 +102,59 @@ const assignmentDelete = async (req, res) => {
   }
 };
 
-module.exports = { assignmentCreate, assignmentUpdate, assignmentDelete }
+
+const assignmentSubmission = async (req, res) => {
+  logger.info(`${req.method}: ${req.originalUrl}`);
+  const { assignment_id, details } = req.body;
+  const dbInstance = await db.getInstance();
+
+  // Get the token from the request cookies
+  const token = req.cookies.jwt;
+  if (!token) {
+    return res.status(401).send({ message: 'Unauthorized: No token provided.' });
+  }
+
+  // Verify the token and get the user id
+  let student_id;
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: 'Unauthorized: Invalid token.' });
+    }
+    student_id = decoded.user_Id;
+  });
+
+  try {
+    // First, check if the assignment exists
+    let assignment = (await dbInstance.query(queries.getAssignmentById(assignment_id))).rows;
+    if (!assignment.length) {
+      res.status(404).send({ message: 'Assignment not found or removed.' });
+      return;
+    }
+    assignment = assignment[0];
+
+    // Check if the assignment is past due
+    const dueDate = new Date(assignment.due_date);
+    const currentDate = new Date();
+    console.log(dueDate, currentDate);
+    if (currentDate > dueDate) {
+      res.status(400).send({ message: 'Assignment is past due.' });
+      return;
+    }
+
+
+    const result = await dbInstance.query(queries.createSubmission(student_id, assignment_id, details));
+    const submission_id = result.rows[0].submission_id; // Get the submission_id of the newly created submission
+    await dbInstance.query(queries.updateAssignedStudents(assignment_id,submission_id, student_id));
+
+    logger.info(result);
+    res.send({ message: 'Assignment submitted successfully!' });
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ message: 'Failed to submit assignment.' });
+  } finally {
+    dbInstance.release();
+  }
+};
+
+
+module.exports = { assignmentCreate, assignmentUpdate, assignmentDelete, assignmentSubmission }

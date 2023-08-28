@@ -69,6 +69,21 @@ const queries = {
             WHERE id = ${id}
             `;
         return deleteAssignment;
+    },
+    createSubmission: (student_id, assignment_id, details) => {
+        const createSubmission = `
+            INSERT INTO submission (student_id, assignment_id, details, submitted_at)
+            VALUES ('${student_id}', '${assignment_id}' , '${details}' , '${getCurrentDateTime()}')
+            RETURNING submission_id, assignment_id`;
+
+        return createSubmission;
+    },
+    updateAssignedStudents: (assignment_id,submission_id, student_id) => {
+        const updateAssignedStudents = `
+            UPDATE assignedstudents 
+            SET submission_id = '${submission_id}'
+            WHERE student_id = '${student_id}' AND id = '${assignment_id}'`;
+        return updateAssignedStudents;
     }
 };
 
