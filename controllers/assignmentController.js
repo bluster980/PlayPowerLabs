@@ -4,9 +4,30 @@ const queries = require("../database/queries");
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const nodeMailer = require('nodemailer');
 
 const app = express();
 app.use(cookieParser());
+
+
+// mail service setup
+const nodemailer = require('nodemailer');
+
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  }
+});
+
+transporter.verify(function(error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Server is ready to take our messages');
+  }
+});
 
 
 const assignmentCreate = async (req, res) => {
@@ -42,7 +63,25 @@ const assignmentCreate = async (req, res) => {
       await dbInstance.query(queries.assignStudents(assignmentId, published_by, student_id));
     }
 
+    // Send email to the students
+
+    let mailOptions = {
+      from: process.env.EMAIL,
+      to: 'cracker8151@gmail.com',
+      subject: 'New Assignment Created',
+      text: 'A new assignment has been uploaded.'
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
     res.send({ message: 'Assignment created and assigned successfully!' });
+
   } catch (error) {
     logger.error(error);
     res.status(400).send({ message: 'Failed to create and assign assignment.' });
