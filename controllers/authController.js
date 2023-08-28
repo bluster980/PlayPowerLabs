@@ -43,9 +43,7 @@ const signUp = async (req, res) => {
     const dbInstance = await db.getInstance();
 
     const token = req.cookies.jwt;
-    // if(token) {
     if (0) {
-        // console.log(11111);
         try {
             jwt.verify(token, process.env.JWT_SECRET);
             res.send({ message: 'Successfully LoggedIn', user: req.body});

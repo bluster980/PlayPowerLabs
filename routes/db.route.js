@@ -9,7 +9,6 @@ const { assignmentDelete} = require("../controllers/assignmentController.js");
 const { teacherOnly } = require("../middlewares/checkRole.js");
 const { studentOnly } = require("../middlewares/checkRole.js");
 const { assignmentSubmission } = require("../controllers/assignmentController.js");
-// const express = require('express');
 const cookieParser = require('cookie-parser')
 
 const app = express();

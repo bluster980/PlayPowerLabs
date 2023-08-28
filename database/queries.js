@@ -1,4 +1,4 @@
-const {getCurrentDateTime} = require('../extras/timeFormatter.js');
+const { getCurrentDateTime } = require('../extras/timeFormatter.js');
 
 const queries = {
     checkDbInstance: () => {
@@ -39,17 +39,17 @@ const queries = {
         const createAssignment = `
             INSERT INTO assignment (published_by, title, description, due_date, published_at, points)
             VALUES ('${published_by}', '${title}', '${description}', '${due_date}', '${getCurrentDateTime()}', '${points}')
-            RETURNING id;`; // Add RETURNING id to retrieve the newly created assignment's ID
+            RETURNING id;`;
         return createAssignment;
     },
-    
+
     assignStudents: (assignment_id, teacher_id, student_id) => {
         console.log(assignment_id, teacher_id, student_id);
         const assignStudents = `
             INSERT INTO assignedstudents (id,teacher_id, student_id)
             VALUES ('${assignment_id}', '${teacher_id}', '${student_id}')
             `;
-        return assignStudents;  
+        return assignStudents;
     },
     updateAssignment: (assignment) => {
         console.log(assignment);
@@ -78,7 +78,7 @@ const queries = {
 
         return createSubmission;
     },
-    updateAssignedStudents: (assignment_id,submission_id, student_id) => {
+    updateAssignedStudents: (assignment_id, submission_id, student_id) => {
         const updateAssignedStudents = `
             UPDATE assignedstudents 
             SET submission_id = '${submission_id}'
