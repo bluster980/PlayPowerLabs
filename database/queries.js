@@ -1,3 +1,5 @@
+const {getCurrentDateTime} = require('../extras/timeFormatter.js');
+
 const queries = {
     checkDbInstance: () => {
         const checkDbConnection = `
@@ -25,6 +27,48 @@ const queries = {
             WHERE username = '${username}'
             `;
         return getUserByUsername;
+    },
+    getAssignmentById: (id) => {
+        const getAssignmentById = `
+            SELECT * FROM assignment
+            WHERE id = ${id}
+            `;
+        return getAssignmentById;
+    },
+    createAssignment: (published_by, title, description, due_date, points) => {
+        const createAssignment = `
+            INSERT INTO assignment (published_by, title, description, due_date, published_at, points)
+            VALUES ('${published_by}', '${title}', '${description}', '${due_date}', '${getCurrentDateTime()}', '${points}')
+            RETURNING id;`; // Add RETURNING id to retrieve the newly created assignment's ID
+        return createAssignment;
+    },
+    
+    assignStudents: (assignment_id, teacher_id, student_id) => {
+        console.log(assignment_id, teacher_id, student_id);
+        const assignStudents = `
+            INSERT INTO assignedstudents (id,teacher_id, student_id)
+            VALUES ('${assignment_id}', '${teacher_id}', '${student_id}')
+            `;
+        return assignStudents;  
+    },
+    updateAssignment: (assignment) => {
+        console.log(assignment);
+        const updateAssignment = `
+            UPDATE assignment
+            SET title = '${assignment.title}', 
+                description = '${assignment.description}', 
+                due_date = '${assignment.due_date}',
+                points = ${assignment.points}
+            WHERE id = ${assignment.assignment_id};
+            `;
+        return updateAssignment;
+    },
+    deleteAssignment: (id) => {
+        const deleteAssignment = `
+            DELETE FROM assignment
+            WHERE id = ${id}
+            `;
+        return deleteAssignment;
     }
 };
 

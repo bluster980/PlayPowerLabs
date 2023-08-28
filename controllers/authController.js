@@ -29,7 +29,6 @@ const signUp = async (req, res) => {
         );
         console.log(token);
       res.cookie('jwt', token).json({ message: 'successfully!', token: token });
-    //   res.status(201).send({ message: 'Sign-Up Successful.'}); 
     } catch (error) {
       logger.error(error);
       res.status(400).send({ message: 'Failed to SignUp.' });
@@ -116,6 +115,6 @@ const signUp = async (req, res) => {
     }    
 }; 
    
-  module.exports = { signUp, logIn, };
+  module.exports = { signUp, logIn };
   
   
