@@ -1,14 +1,17 @@
 const express = require('express');
 const cookieParser = require('cookie-parser')
+const { handleEndPoints } = require('./extras/endPoints.js')
+
 
 const app = express();
 
 app.use(cookieParser())
 
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
+console.log(process.env.PORT);
 
 // const express = require("express");
 const bodyParser = require("body-parser");
@@ -23,10 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api", require("./routes/db.route.js"));
 
-app.get("/", (req, res) => {
-  logger.info(`${req.method}: ${req.originalUrl}`);
-  res.send("Hello World!");
-});
+app.get("/", handleEndPoints);
 
 app.listen(PORT, (err) => {
   if (err) logger.error(err);

@@ -2,6 +2,9 @@ const db = require("../database/database");
 const logger = require("../utils/pino");
 const queries = require("../database/queries");
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const checkDb = async (req, res) => {
   logger.info(`${req.method}: ${req.originalUrl}`);
   const dbInstance = await db.getInstance();

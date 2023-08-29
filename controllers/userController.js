@@ -8,6 +8,9 @@ const app = express();
 
 app.use(cookieParser())
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const getUsers = async (req, res) => {
     logger.info(`${req.method}: ${req.originalUrl}`);
     const dbInstance = await db.getInstance();

@@ -9,7 +9,7 @@ const { assignmentDelete} = require("../controllers/assignmentController.js");
 const { teacherOnly } = require("../middlewares/checkRole.js");
 const { studentOnly } = require("../middlewares/checkRole.js");
 const { assignmentSubmission } = require("../controllers/assignmentController.js");
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -22,8 +22,8 @@ router.get("/users", getUsers);
 router.get("/signup", signUp);
 router.post("/login", logIn);
 router.post("/assignment-create", teacherOnly, assignmentCreate);
-router.post("/assignment-update", teacherOnly, assignmentUpdate);
-router.post("/assignment-delete", teacherOnly, assignmentDelete);
+router.put("/assignment-update", teacherOnly, assignmentUpdate);
+router.delete("/assignment-delete", teacherOnly, assignmentDelete);
 router.post("/assignment-submission", studentOnly, assignmentSubmission);
 
 module.exports = router;

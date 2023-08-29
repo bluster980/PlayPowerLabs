@@ -1,4 +1,5 @@
 {
     "docify.commentService.programmingLanguage": "javascript",
-    "docify.commentService.moreExpressiveComments": false
+    "docify.commentService.moreExpressiveComments": false,
+    "**/node_modules": false
 }

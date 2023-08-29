@@ -9,25 +9,27 @@ const nodeMailer = require('nodemailer');
 const app = express();
 app.use(cookieParser());
 
+const dotenv = require('dotenv');
+dotenv.config();
 
 // mail service setup
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer');
 
-let transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD
-  }
-});
+// let transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: process.env.EMAIL,
+//     pass: process.env.PASSWORD
+//   }
+// });
 
-transporter.verify(function(error, success) {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log('Server is ready to take our messages');
-  }
-});
+// transporter.verify(function(error, success) {
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     console.log('Server is ready to take our messages');
+//   }
+// });
 
 
 const assignmentCreate = async (req, res) => {
@@ -65,20 +67,20 @@ const assignmentCreate = async (req, res) => {
 
     // Send email to the students
 
-    let mailOptions = {
-      from: process.env.EMAIL,
-      to: 'cracker8151@gmail.com',
-      subject: 'New Assignment Created',
-      text: 'A new assignment has been uploaded.'
-    };
+    // let mailOptions = {
+    //   from: process.env.EMAIL,
+    //   to: 'cracker8151@gmail.com',
+    //   subject: 'New Assignment Created',
+    //   text: 'A new assignment has been uploaded.'
+    // };
 
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
+    // transporter.sendMail(mailOptions, function(error, info){
+    //   if (error) {
+    //     console.log(error);
+    //   } else {
+    //     console.log('Email sent: ' + info.response);
+    //   }
+    // });
 
     res.send({ message: 'Assignment created and assigned successfully!' });
 

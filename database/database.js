@@ -2,6 +2,9 @@ const pg = require("pg");
 const logger = require("../utils/pino");
 const fs = require("fs");
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 logger.info("Pool Creating...");
 const pool = new pg.Pool({
   user: process.env.DB_USERNAME,

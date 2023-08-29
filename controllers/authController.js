@@ -9,6 +9,9 @@ const cookieParser = require('cookie-parser');
 const app = express();
 app.use(cookieParser());
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const signUp = async (req, res) => {
     logger.info(`${req.method}: ${req.originalUrl}`);
     const { username, password, role } = req.body;
