@@ -19,7 +19,7 @@ const router = express.Router();
 
 router.get("/check", checkDb);
 router.get("/users", getUsers);
-router.get("/signup", signUp);
+router.post("/signup", signUp);
 router.post("/login", logIn);
 router.post("/assignment-create", teacherOnly, assignmentCreate);
 router.put("/assignment-update", teacherOnly, assignmentUpdate);
